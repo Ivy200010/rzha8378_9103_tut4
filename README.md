@@ -19,6 +19,5 @@ First repository for IDEA9103
 ## This code simulates 100 circles of varying sizes and speeds moving independently. The move() function updates their positions, and the update() function checks for intersections with other circles. The intersect() function detects and visualizes intersections, creating dynamic patterns as circles interact. This approach demonstrates how simple geometric rules can generate complex, emergent behaviors, similar to Casey Reas' “Process Series.” It effectively showcases dynamic interactions and layered structures using basic shapes, making it ideal for visualizing complex systems or creating generative art.
 
 
-
 ## Code Examples
 https://github.com/REAS/SoftwareStructures/blob/master/Code-2016/S3_Process_09/S3_Process_09.pde
