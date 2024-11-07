@@ -12,13 +12,15 @@ function drawSkyBackground() {
     const rectWidth = 850;
     const numberOfRectangles = Math.ceil(600 / rectHeight);
 
-    // Define softened color stops for a harmonious gradient
+    // Define softened color stops for a harmonious gradient, including blue-green colors in the lower part
     const colors = [
-        { r: 160, g: 200, b: 220 },
-        { r: 180, g: 220, b: 170 },
-        { r: 245, g: 225, b: 150 },
-        { r: 250, g: 180, b: 120 },
-        { r: 240, g: 140, b: 130 }
+        { r: 160, g: 200, b: 220 },  // Light sky blue at the top
+        { r: 180, g: 220, b: 170 },  // Light greenish color
+        { r: 245, g: 225, b: 150 },  // Warm yellow
+        { r: 250, g: 180, b: 120 },  // Soft orange
+        { r: 240, g: 140, b: 130 },  // Soft red-pink
+        { r: 100, g: 170, b: 180 },  // New blue-green color
+        { r: 50, g: 120, b: 140 }    // Deep blue-green near the bottom
     ];
 
     // Calculate the number of rectangles per color section
@@ -75,6 +77,22 @@ function addTexture(baseRect, r, g, b, rectWidth, rectHeight, opacity) {
     }
 }
 
+// Execute the main draw functions on page load
+window.onload = function() {
+    drawSkyBackground();
+    drawBuilding();
+    drawBuilding1(); // Ensure the second building set is drawn
+
+    // Draw multiple waves
+    const wavePositions = [200, 300, 400, 530, 510, 470, 350, 360, 750, 770, 600];
+    const waveYPositions = [470, 488, 470, 470, 520, 550, 520, 550, 510, 550, 530];
+
+    for (let i = 0; i < wavePositions.length; i++) {
+        drawWaves(wavePositions[i], waveYPositions[i]);
+    }
+};
+
+
 // Function to draw the building structure
 function drawBuilding() {
     const svg = document.getElementById("svg");
@@ -89,23 +107,40 @@ function drawBuilding() {
     drawReflection();
 
     function drawReflection() {
-        const initialY = 300; 
-        const segmentHeight = 20; 
-        const reflectionSegments = 14; 
-
+        const initialY = 300;
+        const segmentHeight = 20;
+        const reflectionSegments = 14;
+        const reflectionRects = [];
+    
+        // Create the reflection element and store a reference to it
         for (let i = 0; i < reflectionSegments; i++) {
             const segment = document.createElementNS("http://www.w3.org/2000/svg", "rect");
-
-       
-            segment.setAttribute("x", 100 + Math.sin(i * 1) * 5); 
+            const initialX = 100 + Math.sin(i * 1) * 5; // Initial x position
+            segment.setAttribute("x", initialX);
             segment.setAttribute("y", initialY + i * segmentHeight);
             segment.setAttribute("width", "45");
             segment.setAttribute("height", segmentHeight);
             segment.setAttribute("fill", "rgba(44, 27, 50, 0.6)");
-
+    
             svg.appendChild(segment);
+            reflectionRects.push({ segment, initialX });
         }
+    
+        // Define the left and right sway animation parameters
+        let waveOffset = 0;
+    
+        // Use setInterval to update the position of the reflection.
+        setInterval(() => {
+            waveOffset += 0.09; // Control the speed of shaking
+            reflectionRects.forEach((rectObj, index) => {
+                // Adjust the x position according to the fluctuation offset to create a left-right wiggle effect.
+                const newX = rectObj.initialX + Math.sin(waveOffset + index * 0.8) * 3; 
+                rectObj.segment.setAttribute("x", newX);
+            });
+        }, 100); // Updated every 100 milliseconds
     }
+    
+    
 }
 
 // Function to draw additional buildings
