@@ -195,3 +195,62 @@ window.onload = function() {
         drawWaves(wavePositions[i], waveYPositions[i]);
     }
 };
+// Add Eventlistener: animation starts when sky area is clicked.
+document.getElementById("svg").addEventListener("click", createSunsetAnimation);
+
+// Create a sun animation effect.
+function createSunsetAnimation() {
+    const svg = document.getElementById("svg");
+
+    // Check if there is already a sun element to avoid duplicate animations.
+    if (document.getElementById("sun")) return;
+
+    // Create the Sun element (circle)
+    const sun = document.createElementNS("http://www.w3.org/2000/svg", "circle");
+    sun.setAttribute("id", "sun");
+    sun.setAttribute("cx", "0");
+    sun.setAttribute("cy", "200");  
+    sun.setAttribute("r", "40");
+    sun.setAttribute("fill", `rgba(255, 140, 0, 1.0)`); 
+    svg.appendChild(sun);
+
+    // Initialize animation parameters
+    let startX = 0; // Starting x position
+    let startY = 300; // Starting y position in the upper part
+    let endX = 800; // End x position
+    let arcHeight = -200; // Control the arc height, not exceeding the top edge
+    let opacity = 1.0; // Initial opacity
+    let totalSteps = 300; // Number of steps for the animation
+    let currentStep = 0;
+
+
+   // Define the animation update function
+function updateSunPosition() {
+    // Calculate current progress (between 0 and 1)
+    let progress = currentStep / totalSteps;
+
+    // Calculate new position to create an arc trajectory, staying in the upper part
+    let currentX = startX + progress * (endX - startX);
+    let currentY = startY + Math.sin(progress * Math.PI) * arcHeight; // Form an arc from left to right
+
+    // Update opacity to make the sun gradually disappear
+    opacity = 1 - progress;
+
+    // Set the sun's new position and opacity
+    sun.setAttribute("cx", currentX);
+    sun.setAttribute("cy", currentY);
+    sun.setAttribute("fill", `rgba(255, 140, 0, ${opacity})`);
+
+    currentStep++; // Increment step
+
+    // Check if the animation is complete
+    if (currentStep > totalSteps) {
+        clearInterval(animationInterval); // Clear the timer
+        svg.removeChild(sun); // Remove the sun from the SVG
+    }
+}
+
+
+    // Start the animation with setInterval
+    let animationInterval = setInterval(updateSunPosition, 20);
+}
