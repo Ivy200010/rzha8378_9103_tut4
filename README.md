@@ -14,4 +14,11 @@ Animation is characterized by the fact that they work together to form a whole p
 ![Sky Inspiration](readmeImages/Sky_image.jpeg)  
 The animation is inspired by landscape photographic images that show the dynamic feel of the water and the shapes of the clouds that I have added to my own work.
 
+# Technical Notes:
+Building reflection animation: A drawReflection() function is created and called in the drawBuilding() function, then setInterval() is used to periodically update the x position of the reflection element, and the function is used to generate a rocking effect for the building's reflection.
+Sunset animation: use setInterval() to make the sun move along the arc calculated by Math.sin() and Math.PI, and gradually adjust the transparency to realize the fade out.
+Cloud animation: setInterval() is also used to update the transform property of each cloud to control the horizontal movement of the clouds and reset their position when they go out of screen space so that they loop around the screen.
+# For changes in the group code：
+I personalized it by keeping the group code structure, adding setInterval() logic to implement periodic animation, making the page more interactive by adding addEventListener(), and triggering createSunsetAnimation() when the user taps on the screen to start the sun's moving and fading disappearance animation. In realizing the overall moving effect of the clouds, I used SVG's <g> (group) element so that multiple elements within the group can be moved at the same time, and through these elements I realized the innovation of individual animations and improved the interactivity and dynamism of the group code.
+
 
