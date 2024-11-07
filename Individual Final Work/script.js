@@ -254,3 +254,88 @@ function updateSunPosition() {
     // Start the animation with setInterval
     let animationInterval = setInterval(updateSunPosition, 20);
 }
+// Create a floating cloud animation
+function createFloatingClouds() {
+    const svg = document.getElementById("svg");
+
+    // Create a cloud, consisting of three circles
+    function createCloudGroup(cx, cy, mainSize) {
+        const cloudGroup = document.createElementNS("http://www.w3.org/2000/svg", "g"); // Group three circles with a single <g> element.
+        svg.appendChild(cloudGroup);
+
+        // Larger circle in the center
+        const mainCloud = document.createElementNS("http://www.w3.org/2000/svg", "circle");
+        mainCloud.setAttribute("cx", 0);
+        mainCloud.setAttribute("cy", 0);
+        mainCloud.setAttribute("r", mainSize);
+        mainCloud.setAttribute("fill", "rgba(255, 255, 255, 1)");
+        cloudGroup.appendChild(mainCloud);
+
+        // Small circle on the left
+        const leftCloud = document.createElementNS("http://www.w3.org/2000/svg", "circle");
+        leftCloud.setAttribute("cx", -mainSize * 0.8);
+        leftCloud.setAttribute("cy", mainSize * 0.2);
+        leftCloud.setAttribute("r", mainSize * 0.8);
+        leftCloud.setAttribute("fill", "rgba(255, 255, 255, 1)");
+        cloudGroup.appendChild(leftCloud);
+
+        // The little circle on the right
+        const rightCloud = document.createElementNS("http://www.w3.org/2000/svg", "circle");
+        rightCloud.setAttribute("cx", mainSize * 0.8);
+        rightCloud.setAttribute("cy", mainSize * 0.2);
+        rightCloud.setAttribute("r", mainSize * 0.8);
+        rightCloud.setAttribute("fill", "rgba(255, 255, 255, 1)");
+        cloudGroup.appendChild(rightCloud);
+
+        // Setting the initial position
+        cloudGroup.setAttribute("transform", `translate(${cx}, ${cy})`);
+
+        return cloudGroup;
+    }
+
+    // Create multiple clouds, each consisting of three circles
+    const clouds = [
+        createCloudGroup(100, 80, 30),
+        createCloudGroup(250, 100, 40),
+        createCloudGroup(400, 60, 35),
+        createCloudGroup(600, 90, 45)
+    ];
+
+    // Set the initial speed of each cloud
+    const speeds = [0.3, 0.2, 0.25, 0.15];
+
+    // Define the update function to make the clouds float
+    function updateCloudPositions() {
+        clouds.forEach((cloudGroup, index) => {
+            // Get the current x-offset of the cloud group
+            const transform = cloudGroup.getAttribute("transform");
+            const currentX = parseFloat(transform.match(/translate\(([-\d.]+),/)[1]);
+            const newX = currentX + speeds[index]; // Update x position
+
+            // If the cloud goes beyond the right edge, it reappears from the left side
+            const finalX = newX > 850 ? -50 : newX;
+
+            // Update the transform property of the cloud group so that the whole group moves together.
+            cloudGroup.setAttribute("transform", `translate(${finalX}, ${parseFloat(transform.match(/,\s*([-\d.]+)\)/)[1])})`);
+        });
+    }
+
+    // Update cloud location every 20ms
+    setInterval(updateCloudPositions, 20);
+}
+
+// create a floating cloud on page load
+window.onload = function() {
+    drawSkyBackground();
+    drawBuilding();
+    drawBuilding1();
+    createFloatingClouds(); // Add cloud animation
+
+    // Draw multiple waves
+    const wavePositions = [200, 300, 400, 530, 510, 470, 350, 360, 750, 770, 600];
+    const waveYPositions = [470, 488, 470, 470, 520, 550, 520, 550, 510, 550, 530];
+
+    for (let i = 0; i < wavePositions.length; i++) {
+        drawWaves(wavePositions[i], waveYPositions[i]);
+    }
+};
